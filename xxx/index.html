@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+    <title>Informazione Inizio/Fine Lavoro</title>
+    <link rel="stylesheet" href="bootstrap-icons-1.9.1/bootstrap-icons.css">
+</head>
+<body>
+    <div class="container">
+        <div class="row mt-3 p-3">
+            <div class="col-md-9 border border-primary rounded mb-3">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Giorno</th>                                                       
+                            <th>Ora Inizio</th>
+                            <th>Ora Fine</th>
+                            <th>Ore</th>
+                            <th>Importo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+                <div class="my-3">
+                    <button type="button" class="btn btn-primary" id="new_date" data-bs-toggle="modal" data-bs-target="#exampleModal">Nuovo Orario</button>
+                </div>
+            </div>
+            <div class="col-md-3">                                
+                <div class="border border-info rounded p-3">
+                    <label class="form-label">Periodo di Riferimento</label>
+                    <div class="row mb-3">
+                        <div class="col-md-7">                        
+                            <select name="mese" id="mesi" class="form-select">                                                                               
+                                <option value="1">Gennaio</option>
+                                <option value="2">Febbraio</option>
+                                <option value="3">Marzo</option>
+                                <option value="4">Aprile</option>
+                                <option value="5">Maggio</option>
+                                <option value="6">Giugno</option>
+                                <option value="7">Luglio</option>
+                                <option value="8">Agosto</option>
+                                <option value="9">Settembre</option>
+                                <option value="10">Ottobre</option>
+                                <option value="11">Novembre</option>
+                                <option value="12">Dicembre</option>
+                            </select>    
+                        </div>
+                        <div class="col-md-5">                        
+                            <select name="anno" id="anni" class="form-select">
+                                <option value="2022">2022</option>
+                                <option value="2023">2023</option>
+                            </select>
+                        </div>
+                    </div>
+                    <p class="form-label" id="incasso">Totale Importo: </p> 
+                </div>                
+                <!-- <div class="border border-success rounded p-3 mt-3"> -->
+                    <!-- <p id="tot_ore">Totale Ore Mensili: </p> -->
+                                       <!--  -->
+                <!-- </div>                 -->
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Inserisci Nuovo Orario</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="/request/request.php?action=insert" method="post">                
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="mb-3">
+                            <label for="nominativo" class="form-label">Data</label>
+                            <input type="date" class="form-control" name="data" id="data_lavoro" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="persone" class="form-label">Ora inizio</label>
+                            <input type="time" class="form-control" name="ora_ini" id="oraini" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                  <button type="submit" class="btn btn-primary">Conferma</button>
+                </div>
+            </form>
+          </div>
+        </div>
+      </div>                                                                                                       
+      <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel2">Orario di Fine Lavoro</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="/request/request.php?action=confirm" method="post">                
+                <input type="hidden" name="id" id="id">
+                <div class="modal-body">
+                    <div class="row">                        
+                        <div class="mb-3">
+                            <label for="persone" class="form-label">Ora Fine</label>
+                            <input type="time" class="form-control" name="ora_fine" id="orafine" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                  <button type="submit" class="btn btn-primary">Conferma</button>
+                </div>
+            </form>
+          </div>
+        </div>
+      </div>                                                                                                                                                                                            
+    <script>
+        const body = document.querySelector('tbody');
+        const tot_par = document.getElementById('tot_ore');
+        const incasso = document.getElementById('incasso');
+        const btn = document.getElementById('new_date');
+        const now = new Date();
+        const selectedMonth = document.getElementById('mesi');
+        selectedMonth.selectedIndex = now.getMonth();
+        selectedMonth.selected = true;
+        const selectedYear = document.getElementById('anni');
+        for(let i=0;i<selectedYear.options.length;i++){
+            if (selectedYear.options[i].value===now.getFullYear()){
+                selectedYear.options[i].selected = true;
+            }
+        }                    
+        var ControlData = `${(now.getMonth() + 1)}-${now.getFullYear()}`;  
+
+        btn.addEventListener('click',(() => {
+            const now = new Date();  
+            const data_lav = document.getElementById('data_lavoro');
+            const Day = (now.getDay().length===1)?'0'+now.getDate():now.getDate();
+            const Mese = now.getMonth()+1;
+            data_lav.value = Day+'/'+(Mese.length===1?'0'+Mese?Mese)+'/'+now.getFullYear();            
+            const oraini = document.getElementById('oraini');
+            oraini.value = now.getHours()+':'+now.getMinutes();                        
+        }));                
+
+        selectedYear.addEventListener('change',()=> {
+            ControlData = selectedMonth.value+'-'+selectedYear.value;            
+            Request_Orari();
+        });
+
+        selectedMonth.addEventListener('change',()=> {            
+            ControlData = selectedMonth.value+'-'+selectedYear.value;            
+            Request_Orari();
+        });
+
+        function Request_Orari(){
+            fetch("/request/request.php?action=select&data="+ControlData).then((response) => {
+                return response.json();
+            }).then((resp) => {
+                    body.innerHTML = '';
+                    let inc = 0;
+                    resp.forEach((element) => {                    
+                        const tr = document.createElement('tr');
+                        const td1 = document.createElement('td');                
+                        td1.innerText = Create_Data(element.data);                    
+                        tr.append(td1);    
+                        const td2 = document.createElement('td');
+                        td2.innerText = element.ora_ini;
+                        tr.append(td2);                        
+                        const td3 = document.createElement('td');
+                        const td4 = document.createElement('td');                    
+                        const td5 = document.createElement('td');                    
+                        if (element.ora_fine==='00:00:00'){
+                            td3.innerHTML = `<button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal2" onclick="fine_lavoro('${element.id}')">Fine Lavoro</button>`;
+                            td4.innerText = '0,00';
+                            td5.innerText = '0';
+                        } else {    
+                            td3.innerText = element.ora_fine;
+                            td4.innerText = element.ore;
+                            td5.innerText = parseFloat(element.prezzo).toFixed(2);                        
+                        }
+                        tr.append(td3);    
+                        tr.append(td4);
+                        tr.append(td5);
+                        body.append(tr);
+                        inc += parseFloat(element.prezzo);                    
+                    });                
+                    incasso.innerText = 'Totale Importo: € '+inc.toFixed(2);               
+            });
+        }
+
+        function Create_Data(data){
+            const NewDate = new Date(data);
+            return `${NewDate.getDay()}/${NewDate.getMonth()+1}/${NewDate.getFullYear()}`;            
+        }
+
+        function fine_lavoro(id){    
+            const now = new Date();
+            const Id = document.getElementById('id');                        
+            Id.value = id;
+            const orafine = document.getElementById('orafine');
+            orafine.value = now.getHours()+':'+now.getMinutes();
+        }
+
+        (Request_Orari());
+    </script>  
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+</body>
+</html>
